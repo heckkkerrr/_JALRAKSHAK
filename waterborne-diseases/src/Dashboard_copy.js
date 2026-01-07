@@ -11,11 +11,6 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import ReactMarkdown from 'react-markdown';
 import './Dashboard.css';
 
-const LIGHT_MAP =
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
-
-const DARK_MAP =
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
 
 const OutbreakMap = ({ outbreaks, darkMode }) => {
@@ -41,11 +36,24 @@ const OutbreakMap = ({ outbreaks, darkMode }) => {
     return (
         <div className={`card mb-4 ${darkMode ? 'bg-dark border-secondary' : ''}`} style={{ borderRadius: '1rem', overflow: 'hidden' }}>
             {/* The map will always be in light mode for visibility */}
-            <MapContainer center={mapCenter} zoom={5} style={{ height: '450px', width: '100%', filter: darkMode ? 'invert(0.9) hue-rotate(180deg)' : 'none' }} zoomControl={false}>
-               <TileLayer
-                 url={darkMode ? DARK_MAP : LIGHT_MAP}
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO'
-               />
+            <MapContainer
+  key={darkMode ? 'dark-map' : 'light-map'}
+  center={mapCenter}
+  zoom={5}
+  zoomControl={false}
+  attributionControl={false}
+  style={{
+    height: '450px',
+    width: '100%',
+    filter: darkMode
+      ? 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)'
+      : 'none'
+  }}
+>
+              <TileLayer
+  url={`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&key=YOUR_API_KEY`}
+  subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+/>
 
 
                 {outbreaks.map(outbreak => (
@@ -903,7 +911,7 @@ const handleFetchFromDevice = async () => {
     ];
 
     const teamMembers = [
-        { name: "Abhimanyu" }, { name: "Siddharth" }, { name: "Rudra" }, { name: "Karan" }, { name: "Rohan" }
+        { name: "Ahsan" }, { name: "Siddharth" }, { name: "Rudra" }, 
     ];
 
     return (
@@ -1648,15 +1656,17 @@ const handleFetchFromDevice = async () => {
                                             <ul className="list-group list-group-flush">
                                                 <li className={`list-group-item d-flex align-items-start ${darkMode ? 'bg-dark text-light border-secondary' : ''}`}>AI/ML Models</li>
                                                 <li className={`list-group-item d-flex align-items-start ${darkMode ? 'bg-dark text-light border-secondary' : ''}`}>IoT sensors</li>
-                                                <li className={`list-group-item d-flex align-items-start ${darkMode ? 'bg-dark text-light border-secondary' : ''}`}>Mobile applications</li>
+
                                                 <li className={`list-group-item d-flex align-items-start ${darkMode ? 'bg-dark text-light border-secondary' : ''}`}>Real-time alert system</li>
                                             </ul>
                                         </div>
                                         <div className="col-lg-6">
                                             <h3 className="h5 fw-bold mb-3">{t('teamTitle')}</h3>
-                                            <div className="row g-3">
-                                                {teamMembers.map((member, index) => (
-                                                    <div key={index} className="col-6 text-center">
+                                            <div
+  className="d-flex flex-wrap justify-content-start gap-5 mt-4"
+>
+  {teamMembers.map((member, index) => (
+    <div key={index} className="text-center">
                                                         <img
                                                             src={`https://placehold.co/80x80/${['4ade80', '60a5fa', 'f59e0b', 'ef4444', '8b5cf6', '10b981'][index]}/ffffff?text=${member.name.charAt(0)}`}
                                                             alt={member.name}

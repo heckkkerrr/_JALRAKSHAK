@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Dashboard from './Dashboard'; // Your main app component
+import Dashboard from './Dashboard_copy'; // Your main app component
 import ProtectedRoute from './ProtectedRoute';
 
 // We will create LoginPage in the next step
@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Route for the login page */}
-        <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<Dashboard />} />
         
         {/* A protected route for your main dashboard */}
         <Route 
