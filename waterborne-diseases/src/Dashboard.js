@@ -12,10 +12,10 @@ import ReactMarkdown from 'react-markdown';
 import './Dashboard.css';
 
 const LIGHT_MAP =
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 
 const DARK_MAP =
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
 
 const OutbreakMap = ({ outbreaks, darkMode }) => {
@@ -42,10 +42,10 @@ const OutbreakMap = ({ outbreaks, darkMode }) => {
         <div className={`card mb-4 ${darkMode ? 'bg-dark border-secondary' : ''}`} style={{ borderRadius: '1rem', overflow: 'hidden' }}>
             {/* The map will always be in light mode for visibility */}
             <MapContainer center={mapCenter} zoom={5} style={{ height: '450px', width: '100%', filter: darkMode ? 'invert(0.9) hue-rotate(180deg)' : 'none' }} zoomControl={false}>
-               <TileLayer
-                 url={darkMode ? DARK_MAP : LIGHT_MAP}
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO'
-               />
+                <TileLayer
+                    url={darkMode ? DARK_MAP : LIGHT_MAP}
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO'
+                />
 
 
                 {outbreaks.map(outbreak => (
@@ -634,56 +634,56 @@ const App = () => {
     };
 
     const handleSendMessage = async () => {
-    if (!userMessage.trim()) return;
+        if (!userMessage.trim()) return;
 
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const newUserMessage = { id: Date.now(), text: userMessage, sender: 'user', timestamp };
-    setMessages(prev => [...prev, newUserMessage]);
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const newUserMessage = { id: Date.now(), text: userMessage, sender: 'user', timestamp };
+        setMessages(prev => [...prev, newUserMessage]);
 
-    const messageToSend = userMessage;
-    setUserMessage(''); // Clear input immediately for better UX
-    setIsTyping(true);
+        const messageToSend = userMessage;
+        setUserMessage(''); // Clear input immediately for better UX
+        setIsTyping(true);
 
-    try {
-        // Call your backend's /api/chat endpoint
-        const response = await fetch('https://jalbackend.onrender.com/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: messageToSend }),
-        });
+        try {
+            // Call your backend's /api/chat endpoint
+            const response = await fetch('https://jalrakshak-backend-hmar.onrender.com/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: messageToSend }),
+            });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            const aiResponseText = data.reply; // Get the AI's reply
+
+            // Add the AI's message to the chat
+            const aiResponse = {
+                id: Date.now() + 1,
+                text: aiResponseText,
+                sender: 'ai',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            setMessages(prev => [...prev, aiResponse]);
+
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+            // Display an error message in the chat if the call fails
+            const errorResponse = {
+                id: Date.now() + 1,
+                text: "I'm having trouble connecting to my brain right now. Please try again in a moment.",
+                sender: 'ai',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            setMessages(prev => [...prev, errorResponse]);
+        } finally {
+            setIsTyping(false);
         }
-
-        const data = await response.json();
-        const aiResponseText = data.reply; // Get the AI's reply
-
-        // Add the AI's message to the chat
-        const aiResponse = { 
-            id: Date.now() + 1, 
-            text: aiResponseText, 
-            sender: 'ai', 
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-        };
-        setMessages(prev => [...prev, aiResponse]);
-
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-        // Display an error message in the chat if the call fails
-        const errorResponse = {
-            id: Date.now() + 1,
-            text: "I'm having trouble connecting to my brain right now. Please try again in a moment.",
-            sender: 'ai',
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        setMessages(prev => [...prev, errorResponse]);
-    } finally {
-        setIsTyping(false);
-    }
-};
+    };
 
     useEffect(() => {
         if (mainChatRef.current) {
@@ -743,81 +743,81 @@ const App = () => {
     };
 
     const handleWaterFormSubmit = async (e) => {
-    e.preventDefault();
-    setIsWaterAnalyzing(true);
-    setWaterAnalysisResult(null);
-    setWaterAnalysisError(null);
-    const API_URL = 'https://karan0301-sih.hf.space/predict'; // Your ML Model API
+        e.preventDefault();
+        setIsWaterAnalyzing(true);
+        setWaterAnalysisResult(null);
+        setWaterAnalysisError(null);
+        const API_URL = 'https://karan0301-sih.hf.space/predict'; // Your ML Model API
 
-    const submissionData = {
-        contaminant: parseFloat(waterFormData.contaminantLevel),
-        ph: parseFloat(waterFormData.ph),
-        turbidity: parseFloat(waterFormData.turbidity),
-        temperature: parseFloat(waterFormData.temperature),
-        water_source: waterFormData.water_source_type,
-        uv_sensor: waterFormData.uv_sensor.toLowerCase(),
-        guva_sensor: parseFloat(waterFormData.guva_sensor)
+        const submissionData = {
+            contaminant: parseFloat(waterFormData.contaminantLevel),
+            ph: parseFloat(waterFormData.ph),
+            turbidity: parseFloat(waterFormData.turbidity),
+            temperature: parseFloat(waterFormData.temperature),
+            water_source: waterFormData.water_source_type,
+            uv_sensor: waterFormData.uv_sensor.toLowerCase(),
+            guva_sensor: parseFloat(waterFormData.guva_sensor)
+        };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(submissionData),
+            });
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.detail || `HTTP error! Status: ${response.status}`);
+            }
+            const result = await response.json();
+            setWaterAnalysisResult(result); // Set the ML model result
+            console.log("API Response:", result);
+
+        } catch (error) {
+            console.error("API call failed:", error);
+            setWaterAnalysisError(`Failed to get analysis. ${error.message}`);
+        } finally {
+            setIsWaterAnalyzing(false);
+        }
     };
 
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(submissionData),
-        });
-        if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(errData.detail || `HTTP error! Status: ${response.status}`);
-        }
-        const result = await response.json();
-        setWaterAnalysisResult(result); // Set the ML model result
-        console.log("API Response:", result);
+    const handleFetchFromDevice = async () => {
+        setIsFetching(true);
+        setFetchMessage(''); // Clear any previous message
 
-    } catch (error) {
-        console.error("API call failed:", error);
-        setWaterAnalysisError(`Failed to get analysis. ${error.message}`);
-    } finally {
-        setIsWaterAnalyzing(false);
-    }
-};
+        const dataRef = ref(sensorDB, 'waterData');
 
-const handleFetchFromDevice = async () => {
-    setIsFetching(true);
-    setFetchMessage(''); // Clear any previous message
+        try {
+            const snapshot = await get(dataRef);
+            if (snapshot.exists()) {
+                const sensorValues = snapshot.val();
+                console.log("Fetched data:", sensorValues);
 
-    const dataRef = ref(sensorDB, 'waterData');
-    
-    try {
-        const snapshot = await get(dataRef);
-        if (snapshot.exists()) {
-            const sensorValues = snapshot.val();
-            console.log("Fetched data:", sensorValues);
+                setWaterFormData(prevData => ({
+                    ...prevData,
+                    ph: Number(sensorValues.ph).toFixed(2) ?? '',
+                    turbidity: Number(sensorValues.turbidity).toFixed(2) ?? '',
+                    temperature: Number(sensorValues.temperature).toFixed(2) ?? '',
+                    conductivity: Number(sensorValues.conductivity).toFixed(2) ?? '',
+                    contaminantLevel: Number(sensorValues.tds).toFixed(2) ?? '', // Map 'tds' from Firebase
+                    uv_sensor: sensorValues.color ?? 'Green',                   // Map 'color' from Firebase
+                    guva_sensor: Number(sensorValues.uv).toFixed(2) ?? ''
+                }));
 
-            setWaterFormData(prevData => ({
-                ...prevData,
-                 ph: Number(sensorValues.ph).toFixed(2) ?? '',
-                turbidity: Number(sensorValues.turbidity).toFixed(2) ?? '',
-                temperature: Number(sensorValues.temperature).toFixed(2) ?? '',
-                conductivity: Number(sensorValues.conductivity).toFixed(2) ?? '',
-                 contaminantLevel: Number(sensorValues.tds).toFixed(2) ?? '', // Map 'tds' from Firebase
-                uv_sensor: sensorValues.color ?? 'Green',                   // Map 'color' from Firebase
-                guva_sensor: Number(sensorValues.uv).toFixed(2) ?? '' 
-            }));
-
-            // Set a success message instead of an alert
-            setFetchMessage('Successfully fetched the latest sensor data!');
-        } else {
+                // Set a success message instead of an alert
+                setFetchMessage('Successfully fetched the latest sensor data!');
+            } else {
+                // Set an error message
+                setFetchMessage('Could not find any sensor data in the database.');
+            }
+        } catch (error) {
+            console.error("Error fetching data from Firebase:", error);
             // Set an error message
-            setFetchMessage('Could not find any sensor data in the database.');
+            setFetchMessage('An error occurred while fetching data.');
+        } finally {
+            setIsFetching(false);
         }
-    } catch (error) {
-        console.error("Error fetching data from Firebase:", error);
-        // Set an error message
-        setFetchMessage('An error occurred while fetching data.');
-    } finally {
-        setIsFetching(false);
-    }
-};
+    };
 
 
     const handleWaterInputChange = (e) => {
@@ -1251,23 +1251,23 @@ const handleFetchFromDevice = async () => {
                                                         />
                                                     </div>
                                                     <div className="col-md-6">
-                                                <label htmlFor="conductivity" className="form-label fw-bold">{t('conductivity')}</label>
-                                                <div className="input-group">
-                                                    <input
-                                                        type="number"
-                                                        className={`form-control ${darkMode ? 'bg-dark text-light border-secondary' : ''}`}
-                                                        id="conductivity"
-                                                        name="conductivity"
-                                                        value={waterFormData.conductivity}
-                                                        onChange={handleWaterInputChange}
-                                                    />
-                                                    <span className="input-group-text">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-lightning-charge-fill text-warning" viewBox="0 0 16 16">
-                                                            <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                            </div>
+                                                        <label htmlFor="conductivity" className="form-label fw-bold">{t('conductivity')}</label>
+                                                        <div className="input-group">
+                                                            <input
+                                                                type="number"
+                                                                className={`form-control ${darkMode ? 'bg-dark text-light border-secondary' : ''}`}
+                                                                id="conductivity"
+                                                                name="conductivity"
+                                                                value={waterFormData.conductivity}
+                                                                onChange={handleWaterInputChange}
+                                                            />
+                                                            <span className="input-group-text">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-lightning-charge-fill text-warning" viewBox="0 0 16 16">
+                                                                    <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
 
@@ -1284,9 +1284,8 @@ const handleFetchFromDevice = async () => {
                                                     {isFetching ? 'Fetching...' : 'Fetch From Device'}
                                                 </button>
                                                 {fetchMessage && (
-                                                    <p className={`mt-2 text-center small ${
-                                                        fetchMessage.includes('Successfully') ? 'text-success' : 'text-danger'
-                                                    }`}>
+                                                    <p className={`mt-2 text-center small ${fetchMessage.includes('Successfully') ? 'text-success' : 'text-danger'
+                                                        }`}>
                                                         {fetchMessage}
                                                     </p>
                                                 )}
@@ -1436,8 +1435,7 @@ const handleFetchFromDevice = async () => {
                                                                 <h4 className="text-primary fw-bold mb-1">{result.name}</h4>
                                                                 <div className="d-flex align-items-center mb-3">
                                                                     <span className="fw-bold me-2">{t('probability')}:</span>
-                                                                    <span className={`badge rounded-pill p-2 ${
-                                                                        result.probability > 75 ? 'bg-danger' :
+                                                                    <span className={`badge rounded-pill p-2 ${result.probability > 75 ? 'bg-danger' :
                                                                             result.probability > 50 ? 'bg-warning text-dark' : 'bg-info text-dark'
                                                                         }`}>
                                                                         {result.probability}% Match
@@ -1739,7 +1737,7 @@ const handleFetchFromDevice = async () => {
                                         <div className="markdown-container-small">
                                             <ReactMarkdown>{msg.text}</ReactMarkdown>
                                         </div>
-                                     </div>
+                                    </div>
                                     <div className={`text-muted small mt-1 ${msg.sender === 'user' ? 'text-end' : 'text-start'}`}>{msg.timestamp}</div>
                                 </div>
                             </div>

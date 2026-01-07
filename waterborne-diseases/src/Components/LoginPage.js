@@ -14,7 +14,7 @@ const LoginPage = ({ darkMode }) => {
     // Function to handle registration by calling your backend
     const handleRegister = async () => {
         try {
-            const response = await fetch('https://jalbackend.onrender.com/api/register', {
+            const response = await fetch('https://jalrakshak-backend-hmar.onrender.com/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, name }),
@@ -60,7 +60,7 @@ const LoginPage = ({ darkMode }) => {
             localStorage.setItem('authToken', token);
 
             // Notify our backend about the new user
-            await fetch('https://jalbackend.onrender.com/api/handle-social-login', {
+            await fetch('https://jalrakshak-backend-hmar.onrender.com/api/handle-social-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const LoginPage = ({ darkMode }) => {
                     <h2 className="text-center mb-4">{isRegistering ? 'Create Account' : 'JAL-RAKSHAK Login'}</h2>
                     <form onSubmit={handleSubmit}>
                         {isRegistering && (
-                             <div className="form-group mb-3">
+                            <div className="form-group mb-3">
                                 <label>Full Name</label>
                                 <input
                                     type="text"
@@ -128,7 +128,7 @@ const LoginPage = ({ darkMode }) => {
                         <img src="https://www.google.com/favicon.ico" alt="Google icon" style={{ width: '20px', marginRight: '10px' }} />
                         Sign in with Google
                     </button>
-                    
+
                     <button type="button" className="btn btn-link w-100 mt-3" onClick={() => setIsRegistering(!isRegistering)}>
                         {isRegistering ? 'Already have an account? Login' : 'Need an account? Register'}
                     </button>
