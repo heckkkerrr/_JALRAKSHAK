@@ -110,7 +110,7 @@ You are 'Jal-Rakshak AI', a compassionate, reliable, and knowledgeable public he
 `;
 
         const completion = await openAI.chat.completions.create({
-            model: "alibaba/tongyi-deepresearch-30b-a3b:free",
+            model: "google/gemini-2.0-flash-exp:free",
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: message },
