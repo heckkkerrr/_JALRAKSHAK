@@ -1,29 +1,48 @@
-// server.js - Combined Firebase Auth & Chatbot Version
+// server.js - Final Deployment Version
 
 // 1. IMPORT DEPENDENCIES
 const express = require('express');
 const cors = require('cors');
 const OpenAI = require('openai');
-const admin = require('firebase-admin'); // Added for Firebase
+const admin = require('firebase-admin');
+const path = require('path'); // Added to help find files
 require('dotenv').config();
 
 // 2. INITIALIZE THE APP
 const app = express();
-const PORT = 4000;
+// CRITICAL FIX: Use Render's port if available, otherwise 4000
+const PORT = process.env.PORT || 4000; 
 
 // 3. APPLY MIDDLEWARE
-// In section 3
 app.use(cors({
-  origin:['https://statuesque-pavlova-67cd37.netlify.app',
-  'http://localhost:3000'] // IMPORTANT: Use your actual Netlify URL here
+  origin: '*', // CRITICAL FIX: Allows ALL websites (including your phone) to connect
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
 // 4. INITIALIZE FIREBASE ADMIN SDK
-const serviceAccount = require('./serviceAccountKey.json'); // Make sure this file is in your backend folder
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// We try to load the key from the root folder first (Render default), then current folder
+let serviceAccount;
+try {
+    // Try looking in the root directory (standard for Render Secret Files)
+    serviceAccount = require('/opt/render/project/src/Backendjal/serviceAccountKey.json');
+} catch (e) {
+    try {
+        // Fallback: Try looking in the current folder (Local development)
+        serviceAccount = require('./serviceAccountKey.json');
+    } catch (e2) {
+        console.error("❌ ERROR: Could not find serviceAccountKey.json in root or current folder.");
+    }
+}
+
+if (serviceAccount) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+    console.log("✅ Firebase Admin Initialized successfully");
+}
+
 const auth = admin.auth();
 const db = admin.firestore();
 
@@ -38,12 +57,12 @@ const openAI = new OpenAI({
 });
 
 // 6. DEFINE AUTHENTICATION ROUTES
+
 // Route for user registration
 app.post('/api/register', async (req, res) => {
     const { email, password, name } = req.body;
     try {
         const userRecord = await auth.createUser({ email, password, displayName: name });
-        // Also save user info in your Firestore 'users' collection
         await db.collection('users').doc(userRecord.uid).set({
             email: userRecord.email,
             name: name,
@@ -55,14 +74,13 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Middleware to verify Firebase ID token sent from the client
+// Middleware to verify Firebase ID token
 const verifyToken = async (req, res, next) => {
     const idToken = req.headers.authorization?.split('Bearer ')[1];
     if (!idToken) {
         return res.status(401).send('Unauthorized: No token provided');
     }
     try {
-        // req.user will contain the decoded token payload (uid, email, etc.)
         req.user = await auth.verifyIdToken(idToken);
         next();
     } catch (error) {
@@ -70,7 +88,7 @@ const verifyToken = async (req, res, next) => {
     }
 };
 
-// Route to handle creating a user record in Firestore after a social login
+// Route to handle social login
 app.post('/api/handle-social-login', verifyToken, async (req, res) => {
     const { uid, email, name } = req.user;
     const userDocRef = db.collection('users').doc(uid);
@@ -84,13 +102,11 @@ app.post('/api/handle-social-login', verifyToken, async (req, res) => {
 // 7. DEFINE PROTECTED API ENDPOINT FOR THE CHATBOT
 app.post('/api/chat', async (req, res) => {
     try {
-        // Now that the route is protected, we know who is making the request
-        console.log("Received request for public /api/chat route");
+        console.log("Received chat request");
         const { message } = req.body;
 
         const systemPrompt = `
 You are 'Jal-Rakshak AI', a compassionate, reliable, and knowledgeable public health assistant...
-// The rest of your detailed system prompt goes here
 `;
 
         const completion = await openAI.chat.completions.create({
@@ -112,5 +128,5 @@ You are 'Jal-Rakshak AI', a compassionate, reliable, and knowledgeable public he
 
 // 8. START THE SERVER
 app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server is running on port ${PORT}`);
 });
